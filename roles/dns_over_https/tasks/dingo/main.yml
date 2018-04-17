@@ -1,0 +1,28 @@
+---
+- block:
+  - name: Create dingo user
+    user:
+      name: dingo
+      comment: Dingo DNS-over-HTTPS Daemon
+      state: present
+      createhome: false
+      home: /nonexistent
+      shell: /usr/sbin/nologin
+
+  - name: Retrive the latest binary
+    uri:
+      url: "https://api.github.com/repos/pforemski/dingo/releases/latest"
+    register: dingo_latest
+
+  - name: Include tasks for Ubuntu
+    include_tasks: ubuntu.yml
+    when: '"Ubuntu" in OS.stdout'
+
+  - name: Include tasks for FreeBSD
+    include_tasks: freebsd.yml
+    when: '"FreeBSD" in OS.stdout'
+  rescue:
+    - debug: var=fail_hint
+      tags: always
+    - fail:
+      tags: always

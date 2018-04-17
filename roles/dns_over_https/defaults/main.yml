@@ -1,0 +1,3 @@
+---
+dingo_flags: -gdns:auto -port {% if local_dns|d(false)|bool == true %}5353{% else %}53{% endif %} -bind {{ local_service_ip }}
+apparmor_enabled: true
